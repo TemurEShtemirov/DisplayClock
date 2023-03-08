@@ -1,0 +1,75 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box
+}
+
+body {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    background-color: #060606;
+}
+
+.clock {
+    display: flex;
+    gap: calc(var(--segment-length) / 2);
+    --segment-width: 2vmin;
+    --segment-length: 6vmin;
+    --segment-gap: .75vmin;
+    --segment-color: #1D1E22;
+    --segment-color-active: red;
+    --colon-color: white;
+    transform: skew(-15deg)
+}
+
+.colon {
+    display: grid;
+    width: var(--segment-width);
+    gap: var(--segment-width);
+    align-self: center;
+}
+
+.colon::before,
+.colon::after {
+    content: "";
+    aspect-ratio: 1;
+    background-color: var(--colon-color);
+    border-radius: 50%;
+}
+
+.digit {
+    display: grid;
+    gap: var(--segment-gap);
+    grid-template:
+        '.... r1c2 ....'var(--segment-width) 'r2c1 .... r2c3'var(--segment-length) '.... r3c2 ....'var(--segment-width) 'r4c1 .... r4c3'var(--segment-length) '.... r5c2 ....'var(--segment-width) / var(--segment-width) var(--segment-length) var(--segment-width)
+}
+
+.digit>div {
+    grid-area: var(--ga);
+    position: relative;
+}
+
+.digit>div::after {
+    content: "";
+    position: absolute;
+    background: var(--bg, var(--segment-color));
+    --i: calc(var(--segment-width) * -.5);
+    inset: var(--inset, var(--i) 0);
+    --p1: calc(var(--segment-width) / 2);
+    --p2: calc(100% - var(--segment-width) / 2);
+    clip-path: var(--clip, polygon(50% 0, 100% var(--p1), 100% var(--p2), 50% 100%, 0% var(--p2), 0% var(--p1)))
+}
+
+.digit>div:nth-child(3n+1)::after {
+    --inset: 0 var(--i);
+    --clip: polygon(var(--p1) 0, var(--p2) 0, 100% 50%, var(--p2) 100%, var(--p1) 100%, 0 50%);
+}
+
+.digit>div[data-active="1"] {
+    filter: drop-shadow(0 0 0.75vmin var(--segment-color-active));
+}
+
+.digit>div[data-active="1"]::after {
+    background-color: var(--segment-color-active);
+}
